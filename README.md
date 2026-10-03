@@ -44,7 +44,8 @@ npm run build
 | --- | --- | --- | --- |
 | 变电站台账 | `substation` | 变电站 | 站名、电压等级、所属供电所 |
 | 保护装置台账 | `protectiondevice` | 保护装置 | 装置编号、所属间隔、装置型号 |
-| 定值整定 | `settingvalue` | 定值单 | 定值单号、所属装置、定值项目 |
+| 定值整定 | `settingvalue` | 定值单 | 定值单号、电压等级、所属装置、短路电流（取自参数库） |
+| 短路电流与系统阻抗参数库 | `scparams` | 参数版本 | 电压等级、运行方式、计算方式、系统阻抗、三相短路电流 |
 | 定值核对 | `settingcheck` | 核对记录 | 核对编号、所属变电站、装置名称 |
 | 二次回路检查 | `secondarycircuit` | 回路检查记录 | 检查编号、所属间隔、回路类别 |
 | 保护校验 | `relaytest` | 校验记录 | 校验编号、装置名称、校验项目 |
@@ -68,4 +69,11 @@ npm run build
 - 字段、状态、动作与流转目标集中在 `frontend/src/data/modules.ts`；示例数据在
   `frontend/src/data/seed.ts`。
 - 状态流转只允许在 `local-service.ts` 里改，页面组件不做业务判断。
-- 想回到初始数据：清掉浏览器里 `substation-protection:entries` 这一项，或调用 `resetModule(模块)`。
+- 短路电流参数库是独立的版本化数据层：类型/服务/存储分别在 `src/data/sc-types.ts`、
+  `src/api/sc-service.ts`、`src/data/sc-store.ts`。参数按「电压等级 + 运行方式」分组，
+  重新取值后旧版置为已失效（留痕、不再参与整定），同一组只保留一版有效参数；定值单只存
+  版本指针，短路电流始终回参数库取数，取值变更自动落入定值整定的待重算清单，冲突时以最近
+  一次整定计算采用的版本为准。
+- 想回到初始数据：清掉浏览器里 `substation-protection:entries:v2`（台账）与
+  `substation-protection:sc-params`（参数库）两项，或调用 `resetModule(模块)` /
+  参数库页的「恢复示例数据」。
