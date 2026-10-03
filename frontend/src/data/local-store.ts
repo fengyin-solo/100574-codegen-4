@@ -2,7 +2,9 @@ import { SEED_ROWS } from './seed'
 import type { EntryRow } from './types'
 
 // 本地持久化：数据放在 localStorage 里，刷新、关掉再打开都还在。
-const STORAGE_KEY = 'substation-protection:entries'
+// v2：新增 shortcircuit 参数库模块，settingvalue 增加「重算状态」字段并改播真实计算依据，
+// 旧 key 下的示例数据结构对不上，直接换 key 重新播种。
+const STORAGE_KEY = 'substation-protection:entries:v2'
 
 function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T

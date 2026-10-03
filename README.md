@@ -45,6 +45,7 @@ npm run build
 | 变电站台账 | `substation` | 变电站 | 站名、电压等级、所属供电所 |
 | 保护装置台账 | `protectiondevice` | 保护装置 | 装置编号、所属间隔、装置型号 |
 | 定值整定 | `settingvalue` | 定值单 | 定值单号、所属装置、定值项目 |
+| 短路电流参数库 | `shortcircuit` | 短路电流参数 | 电压等级、计算方式、系统阻抗、三相短路电流 |
 | 定值核对 | `settingcheck` | 核对记录 | 核对编号、所属变电站、装置名称 |
 | 二次回路检查 | `secondarycircuit` | 回路检查记录 | 检查编号、所属间隔、回路类别 |
 | 保护校验 | `relaytest` | 校验记录 | 校验编号、装置名称、校验项目 |
@@ -68,4 +69,7 @@ npm run build
 - 字段、状态、动作与流转目标集中在 `frontend/src/data/modules.ts`；示例数据在
   `frontend/src/data/seed.ts`。
 - 状态流转只允许在 `local-service.ts` 里改，页面组件不做业务判断。
-- 想回到初始数据：清掉浏览器里 `substation-protection:entries` 这一项，或调用 `resetModule(模块)`。
+- 想回到初始数据：清掉浏览器里 `substation-protection:entries:v2` 这一项，或调用 `resetModule(模块)`。
+- 短路电流参数库的规则集中在 `frontend/src/api/shortcircuit.ts`：同一电压等级只保留最新一版为
+  现行，旧版转历史不再参与整定计算；同一组参数重复提交只保留最新一版；取值变更后引用旧版的
+  定值单落入定值整定的「待重算清单」；参数库与定值单取值冲突时，按最近一次整定计算采用的版本对齐。

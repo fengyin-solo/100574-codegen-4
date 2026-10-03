@@ -18,6 +18,35 @@
       </article>
     </div>
 
+    <section v-if="recalcRows.length" class="recalc-panel">
+      <h3>待重算清单（{{ recalcRows.length }}）</h3>
+      <p class="hint">短路电流与系统阻抗参数取值已变更，以下定值单需按参数库现行版本重新整定。</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>定值单号</th>
+            <th>所属装置</th>
+            <th>定值项目</th>
+            <th>计算依据</th>
+            <th>重算状态</th>
+            <th>可执行动作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="row in recalcRows" :key="`recalc-${row.id}`">
+            <td>{{ row['定值单号'] }}</td>
+            <td>{{ row['所属装置'] }}</td>
+            <td>{{ row['定值项目'] }}</td>
+            <td>{{ row['计算依据'] }}</td>
+            <td>{{ row['重算状态'] }}</td>
+            <td class="row-actions">
+              <button class="link" type="button" @click="finishRecalc(row)">完成重算</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
     <p class="status-legend">
       <span v-for="item in statusSummary" :key="item.status" class="legend-item">
         {{ item.status }}：{{ item.count }}
@@ -43,7 +72,7 @@
       </thead>
       <tbody>
         <tr v-for="row in rows" :key="String(row.id)">
-          <td v-for="column in columns" :key="column">{{ row[column] ?? '—' }}</td>
+          <td v-for="column in columns" :key="column">{{ row[column] || '—' }}</td>
           <td>{{ row.status }}</td>
           <td class="row-actions">
             <button
@@ -79,15 +108,16 @@ import {
   moduleMeta,
   runAction as applyAction,
 } from '@/api/local-service'
+import { completeRecalc, listRecalcQueue } from '@/api/shortcircuit'
 import type { EntryRow } from '@/data/types'
 
 const meta = moduleMeta('settingvalue')
-const columns = ["定值单号", "所属装置", "定值项目", "整定值", "计算依据", "整定人", "审核人", "定值状态"]
+const columns = ["定值单号", "所属装置", "定值项目", "整定值", "计算依据", "整定人", "审核人", "定值状态", "重算状态"]
 const actions = ["提交整定", "审核定值", "作废定值"]
 const statuses = ["待整定", "整定中", "已审核", "已作废"]
-const stats = [{"label": "待整定定值单", "value": 0}, {"label": "整定中定值单", "value": 0}, {"label": "已作废定值单", "value": 0}]
 
 const rows = ref<EntryRow[]>([])
+const recalcRows = ref<EntryRow[]>([])
 const total = ref(0)
 const errorMessage = ref('')
 const filters = ref<Record<string, string>>({})
@@ -98,6 +128,11 @@ const statusSummary = computed(() =>
     count: rows.value.filter((row) => String(row.status) === status).length,
   })),
 )
+const stats = computed(() => [
+  { label: '待整定定值单', value: rows.value.filter((row) => row.status === '待整定').length },
+  { label: '整定中定值单', value: rows.value.filter((row) => row.status === '整定中').length },
+  { label: '待重算定值单', value: recalcRows.value.length },
+])
 
 function resetFilters() {
   filters.value = {}
@@ -122,12 +157,23 @@ function runAction(action: string, row: EntryRow) {
   reload()
 }
 
+function finishRecalc(row: EntryRow) {
+  errorMessage.value = ''
+  const result = completeRecalc(Number(row.id))
+  if (!result.ok) {
+    errorMessage.value = result.message
+    return
+  }
+  reload()
+}
+
 function reload() {
   errorMessage.value = ''
   try {
     const payload = listEntries(meta.key, filters.value)
     rows.value = payload.items
     total.value = payload.total
+    recalcRows.value = listRecalcQueue()
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : '定值整定列表读取失败'
   }

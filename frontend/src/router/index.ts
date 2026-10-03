@@ -4,6 +4,7 @@ import Dashboard from '@/views/Dashboard.vue'
 const Substation = () => import('@/views/substation/index.vue')
 const Protectiondevice = () => import('@/views/protectiondevice/index.vue')
 const Settingvalue = () => import('@/views/settingvalue/index.vue')
+const Shortcircuit = () => import('@/views/shortcircuit/index.vue')
 const Settingcheck = () => import('@/views/settingcheck/index.vue')
 const Secondarycircuit = () => import('@/views/secondarycircuit/index.vue')
 const Relaytest = () => import('@/views/relaytest/index.vue')
@@ -27,6 +28,7 @@ const router = createRouter({
     { path: '/substation', name: 'substation', component: Substation },
     { path: '/protectiondevice', name: 'protectiondevice', component: Protectiondevice },
     { path: '/settingvalue', name: 'settingvalue', component: Settingvalue },
+    { path: '/shortcircuit', name: 'shortcircuit', component: Shortcircuit },
     { path: '/settingcheck', name: 'settingcheck', component: Settingcheck },
     { path: '/secondarycircuit', name: 'secondarycircuit', component: Secondarycircuit },
     { path: '/relaytest', name: 'relaytest', component: Relaytest },

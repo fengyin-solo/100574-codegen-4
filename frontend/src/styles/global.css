@@ -35,3 +35,25 @@ body { margin: 0; background: #f6f8fb; color: #1f2937; }
 .error-text { color: #b42318; }
 .status-legend { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 10px; font-size: 12px; color: var(--muted); }
 .legend-item { background: #eef2f7; border-radius: 999px; padding: 2px 10px; }
+.filter-item input, .filter-item select { border: 1px solid var(--border); border-radius: 6px; padding: 5px 8px; font-size: 13px; }
+/* 短路电流参数库：按电压等级分栏 */
+.level-board { display: flex; flex-wrap: wrap; gap: 12px; align-items: stretch; margin-bottom: 16px; }
+.level-col { flex: 1; min-width: 180px; background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+.level-col h3 { margin: 0 0 8px; font-size: 15px; }
+.level-col dl { margin: 0; }
+.level-col dl div { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; font-size: 13px; }
+.level-col dt { color: var(--muted); }
+.level-col dd { margin: 0; font-weight: 600; text-align: right; }
+.level-tag { margin: 8px 0 0; font-size: 12px; color: var(--brand); }
+.level-col.unset { border-style: dashed; background: #fafbfc; }
+.level-col.unset ul { margin: 0 0 8px; padding-left: 18px; font-size: 13px; }
+.unset-hint { margin: 0; font-size: 12px; color: var(--muted); }
+.section-title { font-size: 14px; margin: 16px 0 8px; }
+tr.stale td { color: var(--muted); background: #fafbfc; }
+.notice { font-size: 13px; padding: 8px 12px; border-radius: 6px; background: #e8f2ff; border: 1px solid #bfdcff; }
+.notice.error { background: #fef0f0; border-color: #f5c2c0; color: #b42318; }
+.param-form { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+/* 定值整定：待重算清单 */
+.recalc-panel { background: #fffbeb; border: 1px solid #f5dfa0; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; }
+.recalc-panel h3 { margin: 0 0 4px; font-size: 14px; }
+.recalc-panel .hint { margin: 0 0 8px; font-size: 12px; color: var(--muted); }
